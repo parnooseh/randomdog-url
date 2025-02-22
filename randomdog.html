@@ -8,14 +8,34 @@
         async function getRandomDogURL() {
             const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
             const targetUrl = 'https://www.akc.org/dog-breeds/';
-            const response = await fetch(proxyUrl + targetUrl);
-            const text = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'text/html');
-            const breedLinks = Array.from(doc.querySelectorAll('a.breed-type-card__link')).map(link => link.href);
-            const randomBreedURL = breedLinks[Math.floor(Math.random() * breedLinks.length)];
-            document.getElementById('dog-url').innerText = randomBreedURL;
-            document.getElementById('dog-url').href = randomBreedURL;
+            try {
+                const response = await fetch(proxyUrl + targetUrl);
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                
+                // Log the entire document to the console for debugging
+                console.log(doc);
+
+                const breedLinks = Array.from(doc.querySelectorAll('a.breed-type-card__link')).map(link => link.href);
+
+                // Log the breed links to the console for debugging
+                console.log(breedLinks);
+
+                const randomBreedURL = breedLinks[Math.floor(Math.random() * breedLinks.length)];
+                document.getElementById('dog-url').innerText = randomBreedURL;
+                document.getElementById('dog-url').href = randomBreedURL;
+
+                // Handle case when breedLinks array is empty
+                if (breedLinks.length === 0) {
+                    document.getElementById('dog-url').innerText = "No breeds found. Please check the AKC website or try again later.";
+                    document.getElementById('dog-url').href = "#";
+                }
+            } catch (error) {
+                console.error('Error fetching dog breeds:', error);
+                document.getElementById('dog-url').innerText = "Error fetching dog breeds. Please try again later.";
+                document.getElementById('dog-url').href = "#";
+            }
         }
     </script>
 </head>
