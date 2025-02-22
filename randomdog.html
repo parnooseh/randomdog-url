@@ -6,13 +6,13 @@
     <title>Random Dog URL Generator</title>
     <script>
         async function getRandomDogURL() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = 'https://www.akc.org/dog-breeds/';
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const targetUrl = encodeURIComponent('https://www.akc.org/dog-breeds/');
             try {
                 const response = await fetch(proxyUrl + targetUrl);
-                const text = await response.text();
+                const data = await response.json();
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'text/html');
+                const doc = parser.parseFromString(data.contents, 'text/html');
                 
                 // Log the entire document to the console for debugging
                 console.log(doc);
